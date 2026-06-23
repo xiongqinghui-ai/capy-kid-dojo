@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="成年卡皮巴拉">
+  <rect width="180" height="180" rx="38" fill="#fff4d8"/>
+  <ellipse cx="101" cy="103" rx="65" ry="44" fill="#8b5a34" stroke="#6b4226" stroke-width="7"/>
+  <circle cx="55" cy="83" r="23" fill="#8b5a34" stroke="#6b4226" stroke-width="6"/>
+  <circle cx="120" cy="62" r="11" fill="#6b4226" stroke="#4b2d1d" stroke-width="5"/>
+  <circle cx="66" cy="64" r="10" fill="#6b4226" stroke="#4b2d1d" stroke-width="5"/>
+  <circle cx="70" cy="85" r="4.8" fill="#24170f"/>
+  <circle cx="101" cy="87" r="4.8" fill="#24170f"/>
+  <ellipse cx="84" cy="103" rx="11" ry="6" fill="#4b2d1d"/>
+  <path d="M74 118c14 9 32 9 47-2" fill="none" stroke="#4b2d1d" stroke-width="5" stroke-linecap="round"/>
+  <path d="M52 141h31M119 143h31" stroke="#4b2d1d" stroke-width="9" stroke-linecap="round"/>
+  <path d="M67 43l8 16 15-12 15 12 8-16 9 30H58z" fill="#f3a51e" stroke="#6b4226" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="75" cy="58" r="4" fill="#fff4d8"/>
+  <circle cx="90" cy="56" r="4" fill="#fff4d8"/>
+  <circle cx="105" cy="58" r="4" fill="#fff4d8"/>
+  <text x="90" y="166" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#8b5a34">1001-1500</text>
+</svg>

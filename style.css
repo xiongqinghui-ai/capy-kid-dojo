@@ -466,6 +466,138 @@ button:active,
   margin-top: 16px;
 }
 
+.capy-stage-card {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 16px 0;
+  padding: 18px;
+  border: 3px solid rgba(107, 66, 38, 0.14);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(120, 183, 176, 0.22), transparent 28%),
+    linear-gradient(145deg, rgba(255, 250, 241, 0.94), rgba(255, 232, 188, 0.86));
+  box-shadow: var(--shadow);
+}
+
+.capy-stage-current {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.stage-creature {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  border-radius: 32px;
+  background: #fffaf1;
+  border: 3px solid rgba(107, 66, 38, 0.14);
+  box-shadow: inset 0 -10px 0 rgba(107, 66, 38, 0.08);
+  overflow: hidden;
+}
+
+.stage-creature img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.capy-stage-current h2 {
+  margin-bottom: 7px;
+}
+
+.capy-stage-current p {
+  margin-bottom: 8px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.stage-meta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(107, 66, 38, 0.09);
+  color: var(--brown);
+  font-weight: 1000;
+  font-size: 13px;
+}
+
+.stage-progress-line {
+  display: grid;
+  gap: 10px;
+}
+
+.stage-progress-line p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.stage-path {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.stage-node {
+  min-height: 108px;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(255, 250, 241, 0.72);
+  border: 2px solid rgba(107, 66, 38, 0.1);
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  color: var(--muted);
+}
+
+.stage-node span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: rgba(107, 66, 38, 0.08);
+  overflow: hidden;
+}
+
+.stage-node span img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stage-node strong {
+  color: var(--brown);
+  line-height: 1.2;
+  font-size: 13px;
+}
+
+.stage-node small {
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.stage-node.passed {
+  background: #f0f7df;
+  border-color: rgba(107, 143, 53, 0.3);
+}
+
+.stage-node.active {
+  background: #fff0bd;
+  border-color: rgba(243, 165, 30, 0.7);
+  box-shadow: 0 10px 20px rgba(243, 165, 30, 0.16);
+}
+
 .activity-zone {
   padding: 18px;
   border-radius: 30px;
@@ -925,6 +1057,14 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .capy-stage-card {
+    grid-template-columns: 1fr;
+  }
+
+  .stage-path {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .record-summary {
     grid-template-columns: 1fr 1fr 1fr;
   }
@@ -1034,6 +1174,20 @@ textarea:focus {
 
   .config-actions {
     justify-content: flex-start;
+  }
+
+  .capy-stage-current {
+    grid-template-columns: 82px 1fr;
+  }
+
+  .stage-creature {
+    width: 82px;
+    height: 82px;
+    border-radius: 25px;
+  }
+
+  .stage-path {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .record-summary {

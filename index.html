@@ -69,6 +69,25 @@
       </article>
     </section>
 
+    <section class="capy-stage-card">
+      <div class="capy-stage-current">
+        <div class="stage-creature">
+          <img id="stageCreature" src="assets/stages/stage-1-egg.svg" alt="卡皮巴拉当前阶段">
+        </div>
+        <div>
+          <p class="eyebrow">Capybara Growth</p>
+          <h2 id="stageName">还未出生</h2>
+          <p id="stageDesc">小卡皮还在壳里，正在安静积蓄能量。</p>
+          <div class="stage-meta" id="stageMeta">0-150分</div>
+        </div>
+      </div>
+      <div class="stage-progress-line">
+        <div class="honey-progress"><span id="stageProgress"></span></div>
+        <p id="stageNext">继续完成任务，帮助小卡皮成长。</p>
+      </div>
+      <div class="stage-path" id="stagePath"></div>
+    </section>
+
     <section class="activity-zone">
       <div class="section-head">
         <div>
@@ -123,6 +142,13 @@
       completionTitle: $("#completionTitle"),
       completionRing: $("#completionRing"),
       completionPercent: $("#completionPercent"),
+      stageCreature: $("#stageCreature"),
+      stageName: $("#stageName"),
+      stageDesc: $("#stageDesc"),
+      stageMeta: $("#stageMeta"),
+      stageProgress: $("#stageProgress"),
+      stageNext: $("#stageNext"),
+      stagePath: $("#stagePath"),
       categoryBars: $("#categoryBars"),
       categoryTabs: $("#categoryTabs"),
       activityGrid: $("#activityGrid"),
@@ -144,6 +170,7 @@
 
       renderWishHero(wish);
       renderChart(stats);
+      renderCapyStage();
       renderTabs();
       renderActivities();
       renderWishList();
@@ -189,6 +216,30 @@
           <b>${item.done}/${item.required}</b>
         </div>
       `).join("");
+    }
+
+    function renderCapyStage() {
+      const growth = KidDojo.capyStage(state.score);
+      els.stageCreature.src = growth.stage.image;
+      els.stageCreature.alt = growth.stage.name;
+      els.stageName.textContent = `第${growth.index + 1}阶段：${growth.stage.name}`;
+      els.stageDesc.textContent = growth.stage.desc;
+      els.stageMeta.textContent = growth.stage.range;
+      els.stageProgress.style.width = `${growth.progress}%`;
+      els.stageNext.textContent = growth.next
+        ? `距离「${growth.next.name}」还差 ${growth.remaining} 分。`
+        : `距离 1500 分满级还差 ${growth.remaining} 分。`;
+      els.stagePath.innerHTML = growth.stages.map((stage, index) => {
+        const passed = index < growth.index;
+        const active = index === growth.index;
+        return `
+          <div class="stage-node ${passed ? "passed" : ""} ${active ? "active" : ""}">
+            <span><img src="${stage.image}" alt="${KidDojo.escapeHtml(stage.name)}"></span>
+            <strong>${index + 1}. ${KidDojo.escapeHtml(stage.name)}</strong>
+            <small>${KidDojo.escapeHtml(stage.range)}</small>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderTabs() {

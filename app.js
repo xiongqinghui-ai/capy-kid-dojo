@@ -42,6 +42,15 @@ const KidDojo = (() => {
     history: seedHistory()
   };
 
+  const capyStages = [
+    { id: "egg", name: "还未出生", range: "0-150分", min: 0, max: 150, icon: "🥚", image: "assets/stages/stage-1-egg.svg", desc: "小卡皮还在壳里，正在安静积蓄能量。" },
+    { id: "hatching", name: "破壳状态", range: "151-300分", min: 151, max: 300, icon: "🐣", image: "assets/stages/stage-2-hatching.svg", desc: "壳开始裂开，小卡皮马上就要探出头。" },
+    { id: "baby", name: "幼崽阶段", range: "301-500分", min: 301, max: 500, icon: "🦫", image: "assets/stages/stage-3-baby.svg", desc: "幼崽开始探索，每天都在长本领。" },
+    { id: "teen", name: "少年阶段", range: "501-750分", min: 501, max: 750, icon: "🌿", image: "assets/stages/stage-4-teen.svg", desc: "少年卡皮更有力量，能坚持更长的任务。" },
+    { id: "young", name: "青年阶段", range: "751-1000分", min: 751, max: 1000, icon: "🏅", image: "assets/stages/stage-5-young.svg", desc: "青年卡皮已经很稳，开始形成自己的节奏。" },
+    { id: "adult", name: "成年阶段", range: "1001-1500分", min: 1001, max: 1500, icon: "👑", image: "assets/stages/stage-6-adult.svg", desc: "成年卡皮很可靠，代表长期坚持的成果。" }
+  ];
+
   function seedHistory() {
     const now = new Date();
     const data = [
@@ -170,6 +179,24 @@ const KidDojo = (() => {
     };
   }
 
+  function capyStage(score) {
+    const clampedScore = Math.max(0, Number(score || 0));
+    const currentIndex = capyStages.findIndex(stage => clampedScore >= stage.min && clampedScore <= stage.max);
+    const index = currentIndex >= 0 ? currentIndex : capyStages.length - 1;
+    const stage = capyStages[index];
+    const span = Math.max(1, stage.max - stage.min);
+    const progress = Math.min(100, Math.max(0, Math.round(((clampedScore - stage.min) / span) * 100)));
+    const next = capyStages[index + 1] || null;
+    return {
+      stage,
+      stages: capyStages,
+      index,
+      progress,
+      next,
+      remaining: next ? Math.max(0, next.min - clampedScore) : Math.max(0, stage.max - clampedScore)
+    };
+  }
+
   function recordActivity(state, activityId, options = {}) {
     const activity = state.activities.find(item => item.id === activityId);
     if (!activity) return state;
@@ -243,6 +270,7 @@ const KidDojo = (() => {
     todayScore,
     todayActivityMap,
     completionStats,
+    capyStage,
     recordActivity,
     redeemWish,
     migrate
