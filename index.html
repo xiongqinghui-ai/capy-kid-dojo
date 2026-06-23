@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>卡皮成长小屋</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="kid-shell">
+    <header class="kid-hero">
+      <div class="hero-copy">
+        <div class="avatar-wrap">
+          <img id="childAvatar" src="assets/avatar.png" alt="孩子头像">
+          <div class="capy-face" aria-hidden="true">
+            <span></span>
+          </div>
+        </div>
+        <div>
+          <p class="eyebrow">Capybara Dojo</p>
+          <h1 id="homeTitle">卡皮成长小屋</h1>
+          <p class="hero-note">今天完成一项，就给小卡皮的温泉加一点能量。</p>
+        </div>
+      </div>
+      <div class="hero-links">
+        <a class="parent-link record-link" href="record.html">记录分数</a>
+        <a class="parent-link" href="parent.html">家长设置</a>
+      </div>
+    </header>
+
+    <section class="top-grid">
+      <article class="score-card big-card">
+        <div class="card-label">当前积分</div>
+        <div class="score-line">
+          <span id="scoreValue">0</span>
+          <small>分</small>
+        </div>
+        <div class="bubble-row">
+          <span>今日 +<b id="todayScore">0</b></span>
+          <span id="todayCount">0 项完成</span>
+        </div>
+      </article>
+
+      <article class="wish-card big-card">
+        <div class="card-label">当前愿望</div>
+        <div class="wish-main">
+          <div class="wish-icon" id="wishIcon">🎁</div>
+          <div>
+            <h2 id="wishName">还没有愿望</h2>
+            <p id="wishMeta">去家长设置里添加一个目标。</p>
+          </div>
+        </div>
+        <div class="honey-progress"><span id="wishProgress"></span></div>
+        <button class="claim-btn" id="claimWishBtn">兑换愿望</button>
+      </article>
+
+      <article class="chart-card big-card">
+        <div class="card-head">
+          <div>
+            <div class="card-label">今日活动完成图</div>
+            <h2 id="completionTitle">0%</h2>
+          </div>
+          <div class="mini-capy" aria-hidden="true"></div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring" id="completionRing"><span id="completionPercent">0%</span></div>
+          <div class="bar-list" id="categoryBars"></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="activity-zone">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Today's Quests</p>
+          <h2>今天做了什么？</h2>
+        </div>
+        <div class="category-tabs" id="categoryTabs"></div>
+      </div>
+      <div class="quest-grid" id="activityGrid"></div>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="panel">
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Wish List</p>
+            <h2>愿望进度</h2>
+          </div>
+        </div>
+        <div class="wish-list" id="wishList"></div>
+      </article>
+
+      <article class="panel">
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Story</p>
+            <h2>今日小记录</h2>
+          </div>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+  <script>
+    let state = KidDojo.load();
+
+    const $ = selector => document.querySelector(selector);
+    const els = {
+      childAvatar: $("#childAvatar"),
+      homeTitle: $("#homeTitle"),
+      scoreValue: $("#scoreValue"),
+      todayScore: $("#todayScore"),
+      todayCount: $("#todayCount"),
+      wishIcon: $("#wishIcon"),
+      wishName: $("#wishName"),
+      wishMeta: $("#wishMeta"),
+      wishProgress: $("#wishProgress"),
+      claimWishBtn: $("#claimWishBtn"),
+      completionTitle: $("#completionTitle"),
+      completionRing: $("#completionRing"),
+      completionPercent: $("#completionPercent"),
+      categoryBars: $("#categoryBars"),
+      categoryTabs: $("#categoryTabs"),
+      activityGrid: $("#activityGrid"),
+      wishList: $("#wishList"),
+      historyList: $("#historyList"),
+      toast: $("#toast")
+    };
+
+    function render() {
+      const stats = KidDojo.completionStats(state);
+      const wish = KidDojo.activeWish(state);
+      const todayEntries = KidDojo.todayEntries(state).filter(item => item.kind !== "redeem");
+
+      els.childAvatar.src = state.child.avatar || "assets/avatar.png";
+      els.homeTitle.textContent = state.child.homeTitle || `${state.child.name || "小小队长"}的成长小屋`;
+      els.scoreValue.textContent = state.score;
+      els.todayScore.textContent = Math.max(0, KidDojo.todayScore(state));
+      els.todayCount.textContent = `${todayEntries.length} 项完成`;
+
+      renderWishHero(wish);
+      renderChart(stats);
+      renderTabs();
+      renderActivities();
+      renderWishList();
+      renderHistory();
+      KidDojo.save(state);
+    }
+
+    function renderWishHero(wish) {
+      if (!wish) {
+        els.wishIcon.textContent = "🎁";
+        els.wishName.textContent = "还没有愿望";
+        els.wishMeta.textContent = "去家长设置里添加一个目标。";
+        els.wishProgress.style.width = "0%";
+        els.claimWishBtn.disabled = true;
+        return;
+      }
+      const percent = Math.min(100, Math.round(state.score / wish.cost * 100));
+      const left = Math.max(0, wish.cost - state.score);
+      els.wishIcon.textContent = wish.icon || "🎁";
+      els.wishName.textContent = wish.name;
+      els.wishMeta.textContent = left ? `还差 ${left} 分就能实现` : "已经可以兑换啦";
+      els.wishProgress.style.width = `${percent}%`;
+      els.claimWishBtn.disabled = state.score < wish.cost;
+      els.claimWishBtn.textContent = left ? `还差 ${left} 分` : "兑换愿望";
+      els.claimWishBtn.onclick = () => {
+        if (state.score < wish.cost) return;
+        if (!confirm(`兑换「${wish.name}」会花掉 ${wish.cost} 分，确定吗？`)) return;
+        const result = KidDojo.redeemWish(state, wish.id);
+        state = result.state;
+        showToast(result.ok ? "兑换成功，开始新的目标吧。" : "积分还不够。");
+        render();
+      };
+    }
+
+    function renderChart(stats) {
+      els.completionTitle.textContent = `${stats.totalPercent}%`;
+      els.completionPercent.textContent = `${stats.totalPercent}%`;
+      els.completionRing.style.setProperty("--pct", `${stats.totalPercent * 3.6}deg`);
+      els.categoryBars.innerHTML = stats.stats.map(item => `
+        <div class="bar-row">
+          <span>${KidDojo.escapeHtml(item.name)}</span>
+          <div><i style="width:${item.percent}%"></i></div>
+          <b>${item.done}/${item.required}</b>
+        </div>
+      `).join("");
+    }
+
+    function renderTabs() {
+      els.categoryTabs.innerHTML = state.categories.map(category => `
+        <button class="${category.id === state.activeCategoryId ? "active" : ""}" data-id="${category.id}">
+          ${KidDojo.escapeHtml(category.name)}
+        </button>
+      `).join("");
+      els.categoryTabs.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.activeCategoryId = btn.dataset.id;
+          render();
+        });
+      });
+    }
+
+    function renderActivities() {
+      const doneMap = KidDojo.todayActivityMap(state);
+      const activities = state.activities.filter(item => item.categoryId === state.activeCategoryId);
+      if (!activities.length) {
+        els.activityGrid.innerHTML = `<div class="empty">这个分类还没有任务，请让家长添加。</div>`;
+        return;
+      }
+      els.activityGrid.innerHTML = activities.map(activity => {
+        const done = doneMap[activity.id] || 0;
+        const needed = Math.max(1, Number(activity.targetPerDay || 1));
+        const complete = done >= needed;
+        return `
+          <article class="quest ${complete ? "done" : ""}">
+            <div class="quest-top">
+              <span class="quest-points">+${Number(activity.points)}</span>
+              <span class="quest-done">${done}/${needed}</span>
+            </div>
+            <h3>${KidDojo.escapeHtml(activity.name)}</h3>
+            <p>${KidDojo.escapeHtml(activity.note || "完成后点一下")}</p>
+            <button data-id="${activity.id}">${complete ? "再做一次" : "完成啦"}</button>
+          </article>
+        `;
+      }).join("");
+      els.activityGrid.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const activity = state.activities.find(item => item.id === btn.dataset.id);
+          state = KidDojo.recordActivity(state, btn.dataset.id);
+          showToast(`${activity.name} +${activity.points} 分`);
+          render();
+        });
+      });
+    }
+
+    function renderWishList() {
+      const wishes = state.wishes.filter(item => item.status !== "redeemed");
+      if (!wishes.length) {
+        els.wishList.innerHTML = `<div class="empty">愿望清单是空的。</div>`;
+        return;
+      }
+      els.wishList.innerHTML = wishes.map(wish => {
+        const percent = Math.min(100, Math.round(state.score / wish.cost * 100));
+        const left = Math.max(0, wish.cost - state.score);
+        return `
+          <article class="mini-wish ${wish.id === state.activeWishId ? "active" : ""}">
+            <span>${KidDojo.escapeHtml(wish.icon || "🎁")}</span>
+            <div>
+              <strong>${KidDojo.escapeHtml(wish.name)}</strong>
+              <small>${left ? `还差 ${left} 分` : "可兑换"} · ${percent}%</small>
+              <div class="tiny-progress"><i style="width:${percent}%"></i></div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderHistory() {
+      const entries = KidDojo.todayEntries(state).filter(item => item.kind !== "redeem").slice(0, 8);
+      if (!entries.length) {
+        els.historyList.innerHTML = `<div class="empty">今天还没有小记录。</div>`;
+        return;
+      }
+      els.historyList.innerHTML = entries.map(item => `
+        <div class="history-row">
+          <span>${item.points >= 0 ? "+" : ""}${item.points}</span>
+          <div>
+            <strong>${KidDojo.escapeHtml(item.title)}</strong>
+            <small>${KidDojo.formatTime(item.createdAt)}${item.rating ? ` · 自评分 ${item.rating}/5` : ""}${item.detail ? ` · ${KidDojo.escapeHtml(item.detail)}` : ""}</small>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function showToast(text) {
+      els.toast.textContent = text;
+      els.toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 2100);
+    }
+
+    render();
+  </script>
+</body>
+</html>
