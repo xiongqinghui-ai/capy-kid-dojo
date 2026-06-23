@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="壳内卡皮巴拉">
+  <rect width="180" height="180" rx="38" fill="#fff4d8"/>
+  <ellipse cx="90" cy="98" rx="54" ry="65" fill="#f7dba9" stroke="#6b4226" stroke-width="7"/>
+  <path d="M42 90c12 8 21 8 34 0 10-7 22-8 34 1 12 9 21 7 31-2" fill="none" stroke="#6b4226" stroke-width="6" stroke-linecap="round"/>
+  <path d="M56 72c8-20 22-31 41-34 20 8 34 23 39 46-17-12-32-17-48-14-12 2-22 2-32 2z" fill="#c9935a" opacity=".24"/>
+  <path d="M73 103c8-13 25-17 39-8 12 8 18 22 14 37H61c-3-11 1-21 12-29z" fill="#8b5a34" opacity=".28"/>
+  <circle cx="70" cy="130" r="5" fill="#6b4226" opacity=".35"/>
+  <circle cx="112" cy="129" r="5" fill="#6b4226" opacity=".35"/>
+  <path d="M82 144h18" stroke="#6b4226" stroke-width="5" stroke-linecap="round" opacity=".35"/>
+  <text x="90" y="166" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#8b5a34">0-150</text>
+</svg>
